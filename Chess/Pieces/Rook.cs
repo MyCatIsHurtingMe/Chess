@@ -1,10 +1,9 @@
-using System.Drawing;
+namespace Chess;
 
-public class Rook : Piece
+public class Rook(char col) : Piece(col)
 {
-    Rook(char col, int[] coords) : base(col, coords) { }
-    public override Boolean IsValidMove(int[] moveCoords)
+    public override Boolean IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
-        return (moveCoords[0]==coordinates[0]) ^ (moveCoords[1]==coordinates[1]);
+        return (moveCoords[0]==curCoords[0]) ^ (moveCoords[1]==curCoords[1]);
     }
 }

@@ -1,10 +1,9 @@
-using Windows.Media.MediaProperties;
+namespace Chess;
 
-public class King : Piece
+public class King(char col) : Piece(col)
 {
-    King(char col, int[] coords) : base(col, coords) { }
-    public override bool IsValidMove(int[] moveCoords)
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
-        return (coordinates[0] != moveCoords[0]) & (coordinates[1] != moveCoords[1]) & (Math.Abs(coordinates[0] - moveCoords[0]) == 1) & (Math.Abs(coordinates[1] - moveCoords[1]) == 1);
+        return (curCoords[0] != moveCoords[0]) & (curCoords[1] != moveCoords[1]) & (Math.Abs(curCoords[0] - moveCoords[0]) == 1) & (Math.Abs(curCoords[1] - moveCoords[1]) == 1);
     }
 }

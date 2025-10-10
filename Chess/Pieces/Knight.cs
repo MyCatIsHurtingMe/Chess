@@ -1,8 +1,9 @@
-public class Knight : Piece
+namespace Chess;
+
+public class Knight(char col) : Piece(col)
 {
-    Knight(char col, int[] coords) : base(col, coords) { }
-    public override bool IsValidMove(int[] moveCoords)
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
-        return ((Math.Abs(coordinates[0] - moveCoords[0])==2) & (Math.Abs(coordinates[1] - moveCoords[1]) == 1))|((Math.Abs(coordinates[1] - moveCoords[1])==2) & (Math.Abs(coordinates[1] - moveCoords[1]) == 1));
+        return ((Math.Abs(curCoords[0] - moveCoords[0]) == 2) & (Math.Abs(curCoords[1] - moveCoords[1]) == 1)) | ((Math.Abs(curCoords[1] - moveCoords[1]) == 2) & (Math.Abs(curCoords[1] - moveCoords[1]) == 1))&(board[moveCoords[0],moveCoords[1]].Colour!=colour);
     }
 }

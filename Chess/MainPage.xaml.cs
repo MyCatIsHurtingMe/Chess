@@ -4,6 +4,7 @@ namespace Chess;
 
 public sealed partial class MainPage : Page
 {
+    Piece selectedPiece = null;
     public MainPage()
     {
         this.InitializeComponent();
@@ -31,6 +32,10 @@ public sealed partial class MainPage : Page
     }
     private void OnClick(object sender, RoutedEventArgs e)
     {
-        if(sender is Button button)Console.WriteLine(button.Name);
+        if (sender is Button b)
+        {
+            int[] moveCoords = [Grid.GetRow(b), Grid.GetColumn(b)];
+        }
+        //else throw exception
     }
 }

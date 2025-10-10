@@ -1,8 +1,9 @@
-public class Queen:Piece
+namespace Chess;
+
+public class Queen(char col) : Piece(col)
 {
-    Queen(char col, int[] coords) : base(col, coords) { }
-    public override bool IsValidMove(int[] moveCoords)
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
-        return ((moveCoords[0]==coordinates[0]) ^ (moveCoords[1]==coordinates[1])) | ((coordinates[0]!=moveCoords[0])&(Math.Abs(moveCoords[0]-moveCoords[1])==Math.Abs(coordinates[0]-coordinates[1])));
+        return ((moveCoords[0] == curCoords[0]) ^ (moveCoords[1] == curCoords[1])) | ((curCoords[0] != moveCoords[0]) & (Math.Abs(moveCoords[0] - moveCoords[1]) == Math.Abs(curCoords[0] - curCoords[1])));
     }
 }

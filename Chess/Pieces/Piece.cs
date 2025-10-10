@@ -1,18 +1,9 @@
-public abstract class Piece
+namespace Chess;
+
+public abstract class Piece(char col)
 {
-    protected char colour;
-    public char getColour(){
-            return colour;
-    }
-    protected int[] coordinates;
-    public int[] getCoordinates()
-    {
-        return coordinates;
-    }
-    protected Piece(char col, int[] coords)
-    {
-        colour = col;
-        coordinates = coords;
-    }
-    public abstract Boolean IsValidMove(int[] moveCoords);
+    protected char colour = col;
+    public char Colour => colour;
+
+    public abstract bool IsValidMove(int[] curCoords, int[] moveCoords, Board board);
 }
