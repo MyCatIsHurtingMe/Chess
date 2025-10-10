@@ -1,4 +1,4 @@
-public abstract class Queen:Piece
+public class Queen:Piece
 {
     Queen(char col, int[] coords) : base(col, coords) { }
     public override bool IsValidMove(int[] moveCoords)

@@ -9,10 +9,10 @@ public abstract class Piece
     {
         return coordinates;
     }
-    public abstract Boolean IsValidMove(int[] newCoords);
     protected Piece(char col, int[] coords)
     {
         colour = col;
         coordinates = coords;
     }
+    public abstract Boolean IsValidMove(int[] moveCoords);
 }
