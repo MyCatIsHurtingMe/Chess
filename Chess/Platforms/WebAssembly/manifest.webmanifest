@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Chess",
+  "display": "standalone",
+  "name": "Chess",
+  "short_name": "Chess",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
