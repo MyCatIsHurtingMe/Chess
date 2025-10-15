@@ -2,10 +2,33 @@ namespace Chess;
 
 public class Pawn(char col) : Piece(col)
 {
-    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
+    bool hasMoved = false;
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board, BoardDisplay display)
     {
-        if (colour == 'W') return (moveCoords[0] == curCoords[0]) & (moveCoords[1] - curCoords[1] < 3);
-        if (colour == 'B') return (moveCoords[0] == curCoords[0]) & (curCoords[1] - moveCoords[1] < 3);
-        return false;//throw wrong colour exception
+        bool valid = false;
+        int sign = (colour == 'W') ? 1 : -1;
+
+        if ((Math.Abs(moveCoords[0] - curCoords[0]) == 1) & (sign * (moveCoords[1] - curCoords[1]) == 1))
+        {
+            if(((board[moveCoords]?.Colour != colour) & (board[moveCoords] != null)) | (board[moveCoords[0], curCoords[1]] == board.JustMovedTwo)){
+                display.updateButton([moveCoords[0], curCoords[1]]);
+                valid = true;
+            }
+
+        }
+        if ((curCoords[0] == moveCoords[0]) & (board[moveCoords] == null))
+        {
+            if (!hasMoved & (Math.Abs(moveCoords[1] - curCoords[1]) == 2))
+            {
+                valid = (sign * (moveCoords[1] - curCoords[1]) > 0) & (board[moveCoords[0], moveCoords[1] - sign] == null);
+                if (valid == true) board.JustMovedTwo = this;
+            }
+            else
+            {
+                valid = sign*(moveCoords[1] - curCoords[1]) == 1;
+            }
+        }
+        hasMoved = true;
+        return valid;
     }
 }

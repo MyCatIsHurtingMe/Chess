@@ -2,9 +2,19 @@ namespace Chess;
 public class Board
 {
     private Piece[,] board;
+    Pawn justMovedTwo = null;
+    bool wipeJustMovedPawn = false;
 
-    public Piece this[int i, int j]=>board[i,j];
-    Board()
+    public Piece this[int i, int j] {
+        get => board[i, j];
+        set => board[i, j] = value;
+    }
+    public Piece this[int[] i]
+    {
+        get => board[i[0], i[1]];
+        set => board[i[0], i[1]] = value;
+    }
+    public Board()
     {
         board = new Piece[8, 8];
         //initialising pieces
@@ -30,5 +40,19 @@ public class Board
         board[6, 7] = new Knight('B');
         board[7, 7] = new Rook('B');
     }
-    
+    public Pawn JustMovedTwo
+    {
+        get=>justMovedTwo; 
+        set
+        {
+            justMovedTwo = value;
+            wipeJustMovedPawn = false;
+        }
+    }
+
+    public void Wipe()
+    {
+        if (wipeJustMovedPawn) justMovedTwo = null;
+        wipeJustMovedPawn = true;
+    }
 }

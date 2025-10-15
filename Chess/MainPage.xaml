@@ -4,6 +4,6 @@
       xmlns:local="using:Chess"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
   <ScrollViewer IsTabStop="True">
-    <Grid Name="board" HorizontalAlignment="Center"/>
+    <Grid Name="boardGrid" HorizontalAlignment="Center"/>
   </ScrollViewer>
 </Page>
