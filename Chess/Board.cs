@@ -18,27 +18,27 @@ public class Board
     {
         board = new Piece[8, 8];
         //initialising pieces
-        board[0, 0] = new Rook('W');
-        board[1, 0] = new Knight('W');
-        board[2, 0] = new Bishop('W');
-        board[3, 0] = new Queen('W');
-        board[4, 0] = new King('W');
-        board[5, 0] = new Bishop('W');
-        board[6, 0] = new Knight('W');
-        board[7, 0] = new Rook('W');
+        board[0, 0] = new Rook('w');
+        board[1, 0] = new Knight('w');
+        board[2, 0] = new Bishop('w');
+        board[3, 0] = new Queen('w');
+        board[4, 0] = new King('w');
+        board[5, 0] = new Bishop('w');
+        board[6, 0] = new Knight('w');
+        board[7, 0] = new Rook('w');
         for (int i = 0; i < 8; i++)
         {
-            board[i, 1] = new Pawn('W');
-            board[i, 6] = new Pawn('B');
+            board[i, 1] = new Pawn('w');
+            board[i, 6] = new Pawn('b');
         }
-        board[0, 7] = new Rook('B');
-        board[1, 7] = new Knight('B');
-        board[2, 7] = new Bishop('B');
-        board[3, 7] = new Queen('B');
-        board[4, 7] = new King('B');
-        board[5, 7] = new Bishop('B');
-        board[6, 7] = new Knight('B');
-        board[7, 7] = new Rook('B');
+        board[0, 7] = new Rook('b');
+        board[1, 7] = new Knight('b');
+        board[2, 7] = new Bishop('b');
+        board[3, 7] = new Queen('b');
+        board[4, 7] = new King('b');
+        board[5, 7] = new Bishop('b');
+        board[6, 7] = new Knight('b');
+        board[7, 7] = new Rook('b');
     }
     public Pawn JustMovedTwo
     {

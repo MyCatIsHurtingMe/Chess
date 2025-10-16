@@ -1,12 +1,13 @@
 using Chess;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 public class BoardDisplay
 {
     Button[,] gridIndex = new Button[8, 8];
-    Board boardStructure = new(); //make board have grid instead
-    Piece selectedPiece = null;
+    Board boardStructure = new();
+    Piece? selectedPiece = null;
     int[] selectedPieceCoords = new int[2];
-    char currentPlayer = 'W';
+    char currentPlayer = 'w';
     public BoardDisplay(Grid g)
     {
         for (int i = 0; i < 8; i++)
@@ -22,7 +23,13 @@ public class BoardDisplay
                 var button = new Button
                 {
                     Name = $"{c}{j + 1}",
-                    Content = (boardStructure[i, j] == null) ? "" : $"{boardStructure[i,j].Colour} {boardStructure[i, j].GetType().Name}"
+                    Content = new Image
+                    {
+                        Source=(boardStructure[i, j] == null) ? "" : $"Assets/Icons/{boardStructure[i, j].Colour}_{boardStructure[i, j].GetType().Name.ToLower()}.png" 
+                    },
+                    Width = 100,
+                    Height = 100,
+                    Background = ((i+j)%2==0)?"Green":"DarkGreen"
                 };
                 button.Click += OnClick;
                 Grid.SetColumn(button, i);
@@ -50,12 +57,10 @@ public class BoardDisplay
                 int[] moveCoords = [Grid.GetColumn(b), Grid.GetRow(b)];
                 if (selectedPiece.IsValidMove(selectedPieceCoords, moveCoords, boardStructure, this))
                 {
-                    boardStructure[moveCoords] = selectedPiece;
-                    boardStructure[selectedPieceCoords] = null;
+                    UpdateSquare(moveCoords, selectedPiece);
+                    UpdateSquare(selectedPieceCoords, null);
                     selectedPiece = null;
-                    updateButton(moveCoords);
-                    updateButton(selectedPieceCoords);
-                    currentPlayer = (currentPlayer == 'W') ? 'B' : 'W';
+                    currentPlayer = (currentPlayer == 'w') ? 'b' : 'w';
                     boardStructure.Wipe();
                 }
                 else
@@ -68,8 +73,23 @@ public class BoardDisplay
         }
         Console.WriteLine("play colour: " + currentPlayer);
     }
-    public void updateButton(int[] coords)
+    public void UpdateSquare(int[] coords, Piece? piece)
     {
-        gridIndex[coords[0], coords[1]].Content = (boardStructure[coords] == null) ? "" :$"{boardStructure[coords]?.Colour} {boardStructure[coords]?.GetType().Name}";
+        boardStructure[coords] = piece;
+        UpdateButton(coords);
+    }
+    public void UpdateButton(int[] coords)
+    {
+        Piece? piece = boardStructure[coords];
+        if (piece == null)
+        {
+            gridIndex[coords[0], coords[1]].Content = null;
+            return;
+        }
+        Image image = new Image
+        {
+            Source = $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+        };
+        gridIndex[coords[0], coords[1]].Content = image;
     }
 }

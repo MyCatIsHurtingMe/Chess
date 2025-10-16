@@ -6,12 +6,12 @@ public class Pawn(char col) : Piece(col)
     public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board, BoardDisplay display)
     {
         bool valid = false;
-        int sign = (colour == 'W') ? 1 : -1;
+        int sign = (colour == 'w') ? 1 : -1;
 
         if ((Math.Abs(moveCoords[0] - curCoords[0]) == 1) & (sign * (moveCoords[1] - curCoords[1]) == 1))
         {
             if(((board[moveCoords]?.Colour != colour) & (board[moveCoords] != null)) | (board[moveCoords[0], curCoords[1]] == board.JustMovedTwo)){
-                display.updateButton([moveCoords[0], curCoords[1]]);
+                display.UpdateSquare([moveCoords[0], curCoords[1]], null);
                 valid = true;
             }
 
