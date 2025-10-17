@@ -6,7 +6,7 @@ public abstract class Piece(char col)
     public char Colour => colour;
 
     public abstract bool IsValidMove(int[] curCoords, int[] moveCoords, Board board, BoardDisplay display);
-    public Piece? CheckRow(int i, int j, int[] coords, Board board)
+    public Piece? CheckLine(int i, int j, int[] coords, Board board)
     {
         int x = coords[0] + i;
         int y = coords[1] + j;
