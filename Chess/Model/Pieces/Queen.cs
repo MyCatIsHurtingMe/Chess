@@ -2,7 +2,7 @@ namespace Chess;
 
 public class Queen(char col) : Piece(col)
 {
-    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board, BoardDisplay display)
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
         if ((moveCoords[0] == curCoords[0]) ^ (moveCoords[1] == curCoords[1]))
         {

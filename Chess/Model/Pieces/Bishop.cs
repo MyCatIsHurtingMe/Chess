@@ -2,7 +2,7 @@ namespace Chess;
 
 public class Bishop(char col) : Piece(col)
 {
-    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board, BoardDisplay display)
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
         int xDiff = curCoords[0] - moveCoords[0];
         int yDiff = curCoords[1] - moveCoords[1];

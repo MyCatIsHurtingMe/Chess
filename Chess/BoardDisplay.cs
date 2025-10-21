@@ -1,5 +1,4 @@
 using Chess;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 public class BoardDisplay
 {
@@ -8,6 +7,8 @@ public class BoardDisplay
     Piece? selectedPiece = null;
     int[] selectedPieceCoords = new int[2];
     char currentPlayer = 'w';
+    List<Board> moves = [];
+    Board temp;
     public BoardDisplay(Grid g)
     {
         for (int i = 0; i < 8; i++)
@@ -20,12 +21,13 @@ public class BoardDisplay
             char c = (char)(i + 65);
             for (int j = 0; j < 8; j++)
             {
+                Piece piece=boardStructure[i, j];
                 var button = new Button
                 {
                     Name = $"{c}{j + 1}",
                     Content = new Image
                     {
-                        Source=(boardStructure[i, j] == null) ? "" : $"Assets/Icons/{boardStructure[i, j].Colour}_{boardStructure[i, j].GetType().Name.ToLower()}.png" 
+                        Source=(piece == null) ? "" : $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png" 
                     },
                     Width = 100,
                     Height = 100,
@@ -39,12 +41,17 @@ public class BoardDisplay
             }
         }
     }
-    private void OnClick(object sender, RoutedEventArgs e)
+    private void OnClick(object sender, RoutedEventArgs? e)
     {
         if (sender is Button b)
         {
             if (selectedPiece == null)
             {
+                // Console.WriteLine(boardStructure.GetKingCoords(currentPlayer)[1]);
+                // if(boardStructure.IsAttacked(boardStructure.GetKingCoords(currentPlayer), currentPlayer))
+                // {
+                //     //check for checkmate
+                // }
                 if (boardStructure[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour == currentPlayer)
                 {
                     selectedPiece = boardStructure[Grid.GetColumn(b), Grid.GetRow(b)];
@@ -55,13 +62,20 @@ public class BoardDisplay
             else
             {
                 int[] moveCoords = [Grid.GetColumn(b), Grid.GetRow(b)];
-                if (selectedPiece.IsValidMove(selectedPieceCoords, moveCoords, boardStructure, this))
+                temp = (Board)boardStructure.Clone();
+                if (selectedPiece.IsValidMove(selectedPieceCoords, moveCoords, temp))
                 {
-                    UpdateSquare(moveCoords, selectedPiece);
-                    UpdateSquare(selectedPieceCoords, null);
-                    selectedPiece = null;
+                    temp.UpdateSquare(moveCoords, selectedPiece);
+                    temp.UpdateSquare(selectedPieceCoords, null);
+                    if (temp.IsAttacked(temp.GetKingCoords(currentPlayer), currentPlayer))
+                    {
+                        return;
+                    }
+                    boardStructure = temp;
+                    UpdateButtons();
                     currentPlayer = (currentPlayer == 'w') ? 'b' : 'w';
-                    boardStructure.Wipe();
+                    selectedPiece = null;
+                    boardStructure.MoveSuccess();
                 }
                 else
                 {
@@ -69,27 +83,28 @@ public class BoardDisplay
                     OnClick(b, null);
                 }
             }
-            Console.WriteLine(selectedPiece?.GetType().Name);
         }
         Console.WriteLine("play colour: " + currentPlayer);
     }
-    public void UpdateSquare(int[] coords, Piece? piece)
+    public void UpdateButtons()
     {
-        boardStructure[coords] = piece;
-        UpdateButton(coords);
-    }
-    public void UpdateButton(int[] coords)
-    {
-        Piece? piece = boardStructure[coords];
-        if (piece == null)
+        List<int[]> list = boardStructure.ButtonUpdates;
+        foreach (int[] coords in list)
         {
-            gridIndex[coords[0], coords[1]].Content = null;
-            return;
+            Console.WriteLine(coords[0]+","+coords[1]);
+            Piece? piece = boardStructure[coords];
+            if (piece == null)
+            {
+                gridIndex[coords[0], coords[1]].Content = null;
+            }
+            else
+            {
+                Image image = new Image
+                {
+                    Source = $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                };
+                gridIndex[coords[0], coords[1]].Content = image;
+            }
         }
-        Image image = new Image
-        {
-            Source = $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
-        };
-        gridIndex[coords[0], coords[1]].Content = image;
     }
 }

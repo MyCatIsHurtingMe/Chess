@@ -2,7 +2,7 @@ namespace Chess;
 
 public class Rook(char col) : Piece(col)
 {
-    public override Boolean IsValidMove(int[] curCoords, int[] moveCoords, Board board, BoardDisplay display)
+    public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
         if ((moveCoords[0] == curCoords[0]) ^ (moveCoords[1] == curCoords[1]))
         {
@@ -40,7 +40,11 @@ public class Rook(char col) : Piece(col)
                     }
                 }
             }
-            return board[moveCoords]?.Colour != colour;
+            if(board[moveCoords]?.Colour != colour)
+            {
+                hasMoved = true;
+                return true;
+            }
         }
         return false;
     }

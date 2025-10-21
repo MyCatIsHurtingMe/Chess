@@ -26,5 +26,9 @@
       SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="Uno.Toolkit.WinUI" />
+  </ItemGroup>
 
 </Project>
