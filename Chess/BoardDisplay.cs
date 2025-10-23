@@ -1,6 +1,11 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Chess;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.Media.Devices;
 
-public class BoardDisplay
+public class BoardDisplay:INotifyPropertyChanged
 {
     Button[,] gridIndex = new Button[8, 8];
     Board boardStructure = new();
@@ -9,8 +14,19 @@ public class BoardDisplay
     char currentPlayer = 'w';
     List<Board> moves = [];
     Board temp;
-    public BoardDisplay(Grid g)
+    Popup gameOverPopup;
+    public char CurrentPlayer{get => currentPlayer;}
+    public BoardDisplay(Grid g, Popup p, Button b)
     {
+        b.Click += ResetGame;
+        int width = 300;
+        int height = 200;
+        p.Width = width;
+        p.Height = height;
+        var bounds = Window.Current.Bounds;
+        p.HorizontalOffset = (bounds.Width - width) / 2;
+        p.VerticalOffset = (bounds.Height - height) / 2;
+        gameOverPopup = p;
         for (int i = 0; i < 8; i++)
         {
             g.RowDefinitions.Add(new RowDefinition());
@@ -21,17 +37,17 @@ public class BoardDisplay
             char c = (char)(i + 65);
             for (int j = 0; j < 8; j++)
             {
-                Piece piece=boardStructure[i, j];
+                Piece piece = boardStructure[i, j];
                 var button = new Button
                 {
                     Name = $"{c}{j + 1}",
                     Content = new Image
                     {
-                        Source=(piece == null) ? "" : $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png" 
+                        Source = (piece == null) ? "" : $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
                     },
                     Width = 100,
                     Height = 100,
-                    Background = ((i+j)%2==0)?"Green":"DarkGreen"
+                    Background = ((i + j) % 2 == 0) ? "Green" : "DarkGreen"
                 };
                 button.Click += OnClick;
                 Grid.SetColumn(button, i);
@@ -80,7 +96,11 @@ public class BoardDisplay
             }
         }
         Console.WriteLine("play colour: " + currentPlayer);
-        if(boardStructure.isCheckmate(boardStructure.GetKingCoords(currentPlayer), currentPlayer))Console.WriteLine(currentPlayer+"checkmated");
+        if(boardStructure.isCheckmate(boardStructure.GetKingCoords(currentPlayer), currentPlayer)){
+            Console.WriteLine(currentPlayer + "checkmated");
+            DisableButtons();
+            gameOverPopup.IsOpen = true;
+        }
     }
     public void UpdateButtons()
     {
@@ -101,5 +121,62 @@ public class BoardDisplay
                 gridIndex[coords[0], coords[1]].Content = image;
             }
         }
+    }
+    public void EnableButtons()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                gridIndex[i, j].IsEnabled = true;
+            }
+        }
+    }
+    public void DisableButtons()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                gridIndex[i, j].IsEnabled = false;
+            }
+        }
+    }
+    public void ReloadButtons()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                Piece? piece = boardStructure[i,j];
+                if (piece == null)
+                {
+                    gridIndex[i,j].Content = null;
+                }
+                else
+                {
+                    Image image = new Image
+                    {
+                        Source = $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                    };
+                    gridIndex[i,j].Content = image;
+                }
+            }
+        }
+    }
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    private void ResetGame(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("Working");
+        gameOverPopup.IsOpen = false;
+        boardStructure = new();
+        currentPlayer = 'w';
+        moves = [];
+        ReloadButtons();
+        EnableButtons();
     }
 }
