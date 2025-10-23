@@ -107,8 +107,11 @@ public class Board:ICloneable
                 {
                     //diagonal checks
                     attackCoords = CheckLine(i, j, coords);
-                    piece = board[attackCoords[0], attackCoords[1]];
-                    if (piece != null) if ((piece.Colour != colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen"))) return true;
+                    if (attackCoords.Length == 2)
+                    {
+                        piece = board[attackCoords[0], attackCoords[1]];
+                        if ((piece.Colour != colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen"))) return true;
+                    }
                     //knight checks
                     x = coords[0] + i;
                     y = coords[1] + j;
@@ -133,8 +136,11 @@ public class Board:ICloneable
                 {
                     //axis (non-diagonal line) checks
                     attackCoords = CheckLine(i, j, coords);
-                    piece = board[attackCoords[0], attackCoords[1]];
-                    if (piece != null) if ((piece.Colour != colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) return true;
+                    if (attackCoords.Length != 0)
+                    {
+                        piece = board[attackCoords[0], attackCoords[1]];
+                        if (piece != null) if ((piece.Colour != colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) return true;
+                    }
                     //axis king checks
                     x = coords[0] + i;
                     y = coords[1] + j;
@@ -154,12 +160,12 @@ public class Board:ICloneable
             if (coords[0] + 1 < 8)
             {
                 piece = board[coords[0] + 1, y];
-                if (piece != null) if ((piece.Colour == colour) & (piece.GetType().Name == "Pawn")) return true;
+                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) return true;
             }
             if (coords[0] - 1 >= 0)
             {
                 piece = board[coords[0] - 1, y];
-                if (piece != null) if ((piece.Colour == colour) & (piece.GetType().Name == "Pawn")) return true;
+                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) return true;
             }
         }
         return false;
@@ -227,12 +233,12 @@ public class Board:ICloneable
             if (coords[0] + 1 < 8)
             {
                 piece = board[coords[0] + 1, y];
-                if (piece != null) if ((piece.Colour == colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0]+1,y]);
+                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0]+1,y]);
             }
             if (coords[0] - 1 >= 0)
             {
                 piece = board[coords[0] - 1, y];
-                if (piece != null) if ((piece.Colour == colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0]-1,y]);
+                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0]-1,y]);
             }
         }
         return attacks;
@@ -293,20 +299,22 @@ public class Board:ICloneable
                 if (i == 0 & j == 0) continue;
                 x = coords[0] + i;
                 y = coords[1] + j;
-                if (x >= 0 & x < 8 & y >= 0 & y < 8) if (board[x,y]?.Colour!=colour & !IsAttacked([x, y], colour)) return false;
+                if (x >= 0 & x < 8 & y >= 0 & y < 8) if (board[x, y]?.Colour != colour & !IsAttacked([x, y], colour)) return false;
             }
         }
+        Console.WriteLine(0);
         //find all attackers for king square
         List<int[]> list = AttackedBy(coords, colour);
         char attackerColour = (colour == 'w') ? 'b' : 'w';
         if (list.Count == 0) return false;
         if (list.Count == 1)
         {
+            Console.WriteLine(1);
             int[] attackerCoords = list[0];
-            Piece attacker = board[attackerCoords[0], attackerCoords[1]];
-            (x, y) = (attackerCoords[0], attackerCoords[1]);
-            if (Math.Abs(x) <= 1 & Math.Abs(y) <= 1)
+            (int xDiff, int yDiff) = (attackerCoords[0] - coords[0], attackerCoords[1] - coords[1]);
+            if (Math.Abs(xDiff) <= 1 & Math.Abs(yDiff) <= 1)
             {
+                Console.WriteLine(2);
                 Piece defender;
                 list = AttackedBy(attackerCoords, attackerColour);
                 foreach (int[] defenderCoords in list)
@@ -317,9 +325,9 @@ public class Board:ICloneable
             }
             else
             {
-                int xDiff = attackerCoords[0] - coords[0];
-                int yDiff = attackerCoords[1] - coords[1];
-                if((xDiff==0)|(yDiff==0)|Math.Abs(xDiff)==Math.Abs(yDiff)){
+                Console.WriteLine(3);
+                if ((xDiff == 0) | (yDiff == 0) | Math.Abs(xDiff) == Math.Abs(yDiff))
+                {
                     int xSign = xDiff switch
                     {
                         < 0 => -1,
@@ -343,6 +351,7 @@ public class Board:ICloneable
                 if (IsAttacked(attackerCoords, attackerColour)) return false;
             }
         }
+        Console.WriteLine(4);
         return true;
     }
     public bool IsReachable(int[] coords, char colour)
@@ -374,12 +383,6 @@ public class Board:ICloneable
                         piece = board[x, y + j];
                         if (piece != null) if ((piece.GetType().Name == "Knight") & (piece.Colour == colour)) return true;
                     }
-                    //diagonal king checks
-                    if (x >= 0 & x < 8 & y >= 0 & y < 8)
-                    {
-                        piece = board[x, y];
-                        if (piece != null) if ((piece.GetType().Name == "King") & (piece.Colour == colour)) return true;
-                    }
                 }
                 if (Math.Abs(i) != Math.Abs(j))
                 {
@@ -387,14 +390,6 @@ public class Board:ICloneable
                     pieceCoords = CheckLine(i, j, coords);
                     piece = board[pieceCoords[0], pieceCoords[1]];
                     if (piece != null) if ((piece.Colour == colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) return true;
-                    //axis king checks
-                    x = coords[0] + i;
-                    y = coords[1] + j;
-                    if ((x >= 0) & (x < 8) & (y >= 0) & (y < 8))
-                    {
-                        piece = board[x, y];
-                        if (piece != null) if ((piece.GetType().Name == "King") & (piece.Colour == colour)) return true;
-                    }
                 }
             }
         }

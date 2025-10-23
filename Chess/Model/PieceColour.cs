@@ -2,7 +2,7 @@ namespace Chess
 {
     public enum PieceColour
     {
-        w,
-        b
+        w=1,
+        b=-1
     }
 }
