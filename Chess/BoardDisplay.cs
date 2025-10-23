@@ -47,11 +47,11 @@ public class BoardDisplay
         {
             if (selectedPiece == null)
             {
-                // Console.WriteLine(boardStructure.GetKingCoords(currentPlayer)[1]);
-                // if(boardStructure.IsAttacked(boardStructure.GetKingCoords(currentPlayer), currentPlayer))
-                // {
-                //     //check for checkmate
-                // }
+                Console.WriteLine(boardStructure.GetKingCoords(currentPlayer)[1]);
+                if(boardStructure.isCheckmate(boardStructure.GetKingCoords(currentPlayer), currentPlayer))
+                {
+                    //game end
+                }
                 if (boardStructure[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour == currentPlayer)
                 {
                     selectedPiece = boardStructure[Grid.GetColumn(b), Grid.GetRow(b)];
@@ -91,7 +91,6 @@ public class BoardDisplay
         List<int[]> list = boardStructure.ButtonUpdates;
         foreach (int[] coords in list)
         {
-            Console.WriteLine(coords[0]+","+coords[1]);
             Piece? piece = boardStructure[coords];
             if (piece == null)
             {
