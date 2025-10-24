@@ -90,10 +90,12 @@ public class BoardDisplay:INotifyPropertyChanged
                     UpdateButtons();
                     if (promotePopup.IsOpen)
                     {
+                        DisableButtons();
                         while (promotePopup.IsOpen)
                         {
                             await Task.Delay(100);
                         }
+                        EnableButtons();
                         UpdateButtons();
                     }
                     Console.WriteLine(boardStructure.JustMovedTwo);

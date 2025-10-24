@@ -372,8 +372,10 @@ public class Board:ICloneable
                 {
                     //diagonal checks
                     pieceCoords = CheckLine(i, j, coords);
-                    piece = board[pieceCoords[0], pieceCoords[1]];
-                    if (piece != null) if ((piece.Colour == colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen"))) return true;
+                    if(pieceCoords.Length==2){
+                        piece = board[pieceCoords[0], pieceCoords[1]];
+                        if (piece != null) if ((piece.Colour == colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen"))) return true;
+                    }
                     //knight checks
                     x = coords[0] + i;
                     y = coords[1] + j;
@@ -392,8 +394,10 @@ public class Board:ICloneable
                 {
                     //axis (non-diagonal line) checks
                     pieceCoords = CheckLine(i, j, coords);
-                    piece = board[pieceCoords[0], pieceCoords[1]];
-                    if (piece != null) if ((piece.Colour == colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) return true;
+                    if(pieceCoords.Length==2){
+                        piece = board[pieceCoords[0], pieceCoords[1]];
+                        if ((piece.Colour == colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) return true;
+                    }
                 }
             }
         }
@@ -435,12 +439,14 @@ public class Board:ICloneable
         {
             Foreground = "Black",
             Background = "Gray",
+            Width = 50,
+            Height = 50,
             Content = new Image
             {
-                Source = $"../Assets/Icons/{colour}_{promotion.ToLower()}.jpg"
+                Source = $"../Assets/Icons/{colour}_{promotion.ToLower()}.png"
+
             }
         };
-        Console.WriteLine($"../Assets/Icons/{colour}_{promotion.ToLower()}.jpg");
         b.Click += (sender, e) =>
         {
             OnClick(sender, e, coords, promotion, colour);
