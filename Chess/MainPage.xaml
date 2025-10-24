@@ -3,20 +3,24 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:Chess"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-  <StackPanel IsTabStop="True">
+  <StackPanel Name="Root" IsTabStop="True">
     <Grid Name="BoardGrid" HorizontalAlignment="Center">
     </Grid>
-    <Popup Name="GameOver">
+    <Popup Name="GameOver" PlacementTarget="{Binding ElementName=BoardGrid}">
       <StackPanel>
         <Border Background="White" Padding="20" BorderThickness="10">
           <StackPanel>
-            <TextBlock Foreground="Black">
+            <TextBlock Foreground="Black" HorizontalAlignment="Center">
               <Run Text="{Binding CurrentPlayer}"/>
               <Run Text=" won"/>
             </TextBlock>
-            <Button Name="PlayAgain" Content="Play again?" Foreground="Black" Background="Gray"/>
+            <Button Name="PlayAgain" Content="Play again?" Foreground="Black" Background="Gray" HorizontalAlignment="Center"/>
           </StackPanel>
         </Border>
+      </StackPanel>
+    </Popup>
+    <Popup Name="Promote" PlacementTarget="{Binding ElementName=BoardGrid}">
+      <StackPanel Background="Blue" Height="200" Width="300">
       </StackPanel>
     </Popup>
   </StackPanel>

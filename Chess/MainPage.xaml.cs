@@ -4,6 +4,6 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
-        DataContext = new BoardDisplay(BoardGrid, GameOver, PlayAgain);
+        DataContext = new BoardDisplay(BoardGrid, GameOver, Promote, PlayAgain);
     }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Chess;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -8,25 +9,28 @@ using Windows.Media.Devices;
 public class BoardDisplay:INotifyPropertyChanged
 {
     Button[,] gridIndex = new Button[8, 8];
-    Board boardStructure = new();
+    Board boardStructure;
     Piece? selectedPiece = null;
     int[] selectedPieceCoords = new int[2];
     char currentPlayer = 'w';
     List<Board> moves = [];
     Board temp;
     Popup gameOverPopup;
-    public char CurrentPlayer{get => currentPlayer;}
-    public BoardDisplay(Grid g, Popup p, Button b)
+    Popup promotePopup;
+    public char CurrentPlayer { get => currentPlayer; }
+    public BoardDisplay(Grid g, Popup gameOver, Popup promote, Button b)
     {
+        boardStructure = new(promote);
+        promotePopup = promote;
         b.Click += ResetGame;
         int width = 300;
         int height = 200;
-        p.Width = width;
-        p.Height = height;
-        var bounds = Window.Current.Bounds;
-        p.HorizontalOffset = (bounds.Width - width) / 2;
-        p.VerticalOffset = (bounds.Height - height) / 2;
-        gameOverPopup = p;
+        gameOver.Width = width;
+        gameOver.Height = height;
+        var bounds = Window.Current.Bounds;//maybe breakable
+        gameOver.HorizontalOffset = (bounds.Width + width/2) / 2;
+        gameOver.VerticalOffset = (bounds.Height + height/2) / 2;
+        gameOverPopup = gameOver;
         for (int i = 0; i < 8; i++)
         {
             g.RowDefinitions.Add(new RowDefinition());
@@ -57,7 +61,7 @@ public class BoardDisplay:INotifyPropertyChanged
             }
         }
     }
-    private void OnClick(object sender, RoutedEventArgs? e)
+    private async void OnClick(object sender, RoutedEventArgs? e)
     {
         if (sender is Button b)
         {
@@ -84,6 +88,15 @@ public class BoardDisplay:INotifyPropertyChanged
                     }
                     boardStructure = temp;
                     UpdateButtons();
+                    if (promotePopup.IsOpen)
+                    {
+                        while (promotePopup.IsOpen)
+                        {
+                            await Task.Delay(100);
+                        }
+                        UpdateButtons();
+                    }
+                    Console.WriteLine(boardStructure.JustMovedTwo);
                     currentPlayer = (currentPlayer == 'w') ? 'b' : 'w';
                     selectedPiece = null;
                     boardStructure.MoveSuccess();
@@ -173,7 +186,7 @@ public class BoardDisplay:INotifyPropertyChanged
     {
         Console.WriteLine("Working");
         gameOverPopup.IsOpen = false;
-        boardStructure = new();
+        boardStructure = new(promotePopup);
         currentPlayer = 'w';
         moves = [];
         ReloadButtons();

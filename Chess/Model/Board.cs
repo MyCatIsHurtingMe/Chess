@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.Media.SpeechSynthesis;
 
@@ -13,6 +15,7 @@ public class Board:ICloneable
     int[] blackKingCoords;
     int currentMove = 0;
     List<int[]> buttonUpdates = new List<int[]>();
+    Popup promotePopup;
     public King GetKing(char colour)
     {
         return (colour == 'w') ? whiteKing : blackKing;
@@ -36,8 +39,9 @@ public class Board:ICloneable
         set => board[i[0], i[1]] = value;
     }
     public List<int[]> ButtonUpdates => buttonUpdates;
-    public Board()
+    public Board(Popup p)
     {
+        promotePopup = p;
         //initialising pieces
         board[0, 0] = new Rook('w');
         board[1, 0] = new Knight('w');
@@ -258,7 +262,7 @@ public class Board:ICloneable
         }
         Array.Copy(whiteKingCoords, whiteCoords, 2);
         Array.Copy(blackKingCoords, blackCoords, 2);
-        return new Board
+        return new Board(promotePopup)
         {
             board = copy,
             justMovedTwo = (Pawn)justMovedTwo?.Clone(),
@@ -405,8 +409,54 @@ public class Board:ICloneable
         if (y >= 0 & y < 8)
         {
             piece = board[coords[0], y];
-            if (piece != null) if ((piece.Colour == colour) & (piece.GetType().Name == "Pawn") & (piece.HasMoved==false)) return true;
+            if (piece != null) if ((piece.Colour == colour) & (piece.GetType().Name == "Pawn") & (piece.HasMoved == false)) return true;
         }
         return false;
     }
+    public void PromoteMenu(int[] coords, char colour)
+    {
+        StackPanel s = (StackPanel)promotePopup.Child;
+        s.Children.Clear();
+        s.Children.Add(new TextBlock
+        {
+            Foreground = "Black",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Text = "Choose Promotion:"
+        });
+        s.Children.Add(BuildButton(coords, "Queen", colour));
+        s.Children.Add(BuildButton(coords, "Rook", colour));
+        s.Children.Add(BuildButton(coords, "Knight", colour));
+        s.Children.Add(BuildButton(coords, "Bishop", colour));
+        promotePopup.IsOpen = true;
+    }
+    private Button BuildButton(int[] coords, string promotion, char colour)
+    {
+        Button b = new Button
+        {
+            Foreground = "Black",
+            Background = "Gray",
+            Content = new Image
+            {
+                Source = $"../Assets/Icons/{colour}_{promotion.ToLower()}.jpg"
+            }
+        };
+        Console.WriteLine($"../Assets/Icons/{colour}_{promotion.ToLower()}.jpg");
+        b.Click += (sender, e) =>
+        {
+            OnClick(sender, e, coords, promotion, colour);
+        };
+        return b;
+    }
+    private void OnClick(object sender, EventArgs e, int[] coords, string promotion, char colour)
+    {
+        Piece piece = promotion switch
+        {
+            "Queen" => new Queen(colour),
+            "Rook" => new Rook(colour),
+            "Knight" => new Knight(colour),
+            "Bishop" => new Bishop(colour)
+        };
+        board[coords[0], coords[1]] = piece;
+        promotePopup.IsOpen = false;
+    } 
 }
