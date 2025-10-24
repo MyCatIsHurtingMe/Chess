@@ -11,8 +11,11 @@ public class Pawn(char col) : Piece(col)
 
         if ((Math.Abs(moveCoords[0] - curCoords[0]) == 1) & (sign * (moveCoords[1] - curCoords[1]) == 1))
         {
-            if (((board[moveCoords]?.Colour != colour) & (board[moveCoords] != null)) | (board[moveCoords[0], curCoords[1]] == board.JustMovedTwo))
+            if ((board[moveCoords]?.Colour != colour) & (board[moveCoords] != null))
             {
+                valid = true;
+            }
+            if(board[moveCoords[0], curCoords[1]] == board.JustMovedTwo){
                 board.UpdateSquare([moveCoords[0], curCoords[1]], null);
                 valid = true;
             }
