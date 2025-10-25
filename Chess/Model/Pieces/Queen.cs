@@ -1,6 +1,6 @@
 namespace Chess;
 
-public class Queen(char col) : Piece(col)
+public class Queen(PieceColour col) : Piece(col)
 {
     public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {

@@ -1,6 +1,6 @@
 namespace Chess;
 
-public class Rook(char col) : Piece(col)
+public class Rook(PieceColour col) : Piece(col)
 {
     public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {

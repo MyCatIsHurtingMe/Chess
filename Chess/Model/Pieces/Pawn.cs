@@ -2,12 +2,12 @@ using System.Transactions;
 
 namespace Chess;
 
-public class Pawn(char col) : Piece(col)
+public class Pawn(PieceColour col) : Piece(col)
 {
     public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
         bool valid = false;
-        int sign = (colour == 'w') ? 1 : -1;
+        int sign = (colour == PieceColour.White) ? 1 : -1;
 
         if ((Math.Abs(moveCoords[0] - curCoords[0]) == 1) & (sign * (moveCoords[1] - curCoords[1]) == 1))
         {

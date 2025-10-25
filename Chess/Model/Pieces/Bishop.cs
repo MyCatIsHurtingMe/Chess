@@ -1,6 +1,6 @@
 namespace Chess;
 
-public class Bishop(char col) : Piece(col)
+public class Bishop(PieceColour col) : Piece(col)
 {
     public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {

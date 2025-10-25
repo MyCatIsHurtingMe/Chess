@@ -16,18 +16,18 @@ public class Board:ICloneable
     int currentMove = 0;
     List<int[]> buttonUpdates = new List<int[]>();
     Popup promotePopup;
-    public King GetKing(char colour)
+    public King GetKing(PieceColour colour)
     {
-        return (colour == 'w') ? whiteKing : blackKing;
+        return (colour == PieceColour.White) ? whiteKing : blackKing;
     }
-    public int[] GetKingCoords(char colour)
+    public int[] GetKingCoords(PieceColour colour)
     {
-        return (colour == 'w') ? whiteKingCoords : blackKingCoords;
+        return (colour == PieceColour.White) ? whiteKingCoords : blackKingCoords;
     }
-    public void SetKingCoords(int[] coords, char colour)
+    public void SetKingCoords(int[] coords, PieceColour colour)
     {
-        if (colour == 'w') whiteKingCoords = coords;
-        if (colour == 'b') blackKingCoords = coords;
+        if (colour == PieceColour.White) whiteKingCoords = coords;
+        if (colour == PieceColour.Black) blackKingCoords = coords;
     }
     public Piece this[int column, int row] {
         get => board[column, row];
@@ -43,31 +43,31 @@ public class Board:ICloneable
     {
         promotePopup = p;
         //initialising pieces
-        board[0, 0] = new Rook('w');
-        board[1, 0] = new Knight('w');
-        board[2, 0] = new Bishop('w');
-        board[3, 0] = new Queen('w');
-        whiteKing = new King('w');
+        board[0, 0] = new Rook(PieceColour.White);
+        board[1, 0] = new Knight(PieceColour.White);
+        board[2, 0] = new Bishop(PieceColour.White);
+        board[3, 0] = new Queen(PieceColour.White);
+        whiteKing = new King(PieceColour.White);
         whiteKingCoords = [4, 0];
         board[4, 0] = whiteKing;
-        board[5, 0] = new Bishop('w');
-        board[6, 0] = new Knight('w');
-        board[7, 0] = new Rook('w');
+        board[5, 0] = new Bishop(PieceColour.White);
+        board[6, 0] = new Knight(PieceColour.White);
+        board[7, 0] = new Rook(PieceColour.White);
         for (int i = 0; i < 8; i++)
         {
-            board[i, 1] = new Pawn('w');
-            board[i, 6] = new Pawn('b');
+            board[i, 1] = new Pawn(PieceColour.White);
+            board[i, 6] = new Pawn(PieceColour.Black);
         }
-        board[0, 7] = new Rook('b');
-        board[1, 7] = new Knight('b');
-        board[2, 7] = new Bishop('b');
-        board[3, 7] = new Queen('b');
-        blackKing = new King('b');
+        board[0, 7] = new Rook(PieceColour.Black);
+        board[1, 7] = new Knight(PieceColour.Black);
+        board[2, 7] = new Bishop(PieceColour.Black);
+        board[3, 7] = new Queen(PieceColour.Black);
+        blackKing = new King(PieceColour.Black);
         blackKingCoords = [4, 7];
         board[4, 7] = blackKing;
-        board[5, 7] = new Bishop('b');
-        board[6, 7] = new Knight('b');
-        board[7, 7] = new Rook('b');
+        board[5, 7] = new Bishop(PieceColour.Black);
+        board[6, 7] = new Knight(PieceColour.Black);
+        board[7, 7] = new Rook(PieceColour.Black);
     }
     public Pawn JustMovedTwo
     {
@@ -97,7 +97,7 @@ public class Board:ICloneable
         }
         return [];
     }
-    public bool IsAttacked(int[] coords, char colour)
+    public bool IsAttacked(int[] coords, PieceColour colour)
     {
         Piece? piece;
         int[] attackCoords;
@@ -157,7 +157,7 @@ public class Board:ICloneable
             }
         }
         //Pawn checks
-        int sign = (colour == 'w') ? 1 : -1;
+        int sign = (colour == PieceColour.White) ? 1 : -1;
         y = coords[1] + sign;
         if (y >= 0 & y < 8)
         {
@@ -174,7 +174,7 @@ public class Board:ICloneable
         }
         return false;
     }
-    public List<int[]> AttackedBy(int[] coords, char colour)
+    public List<int[]> AttackedBy(int[] coords, PieceColour colour)
     {
         List<int[]> attacks = new List<int[]>();
         int[] attackCoords = new int[2];
@@ -230,7 +230,7 @@ public class Board:ICloneable
             }
         }
         //Pawn checks
-        int sign = (colour == 'w') ? 1 : -1;
+        int sign = (colour == PieceColour.White) ? 1 : -1;
         y = coords[1] + sign;
         if (y >= 0 & y < 8)
         {
@@ -292,7 +292,7 @@ public class Board:ICloneable
         this[coords] = piece;
         buttonUpdates.Add(coords);
     }
-    public bool isCheckmate(int[] coords, char colour)
+    public bool isCheckmate(int[] coords, PieceColour colour)
     {
         int x;
         int y;
@@ -309,7 +309,7 @@ public class Board:ICloneable
         Console.WriteLine(0);
         //find all attackers for king square
         List<int[]> list = AttackedBy(coords, colour);
-        char attackerColour = (colour == 'w') ? 'b' : 'w';
+        PieceColour attackerColour = (colour == PieceColour.White) ? PieceColour.Black : PieceColour.White;
         if (list.Count == 0) return false;
         if (list.Count == 1)
         {
@@ -358,7 +358,7 @@ public class Board:ICloneable
         Console.WriteLine(4);
         return true;
     }
-    public bool IsReachable(int[] coords, char colour)
+    public bool IsReachable(int[] coords, PieceColour colour)
     {
         Piece? piece;
         int[] pieceCoords;
@@ -402,7 +402,7 @@ public class Board:ICloneable
             }
         }
         //Pawn checks
-        int sign = (colour == 'w') ? 1 : -1;
+        int sign = (int)colour;
         y = coords[1] - sign;
         if (y >= 0 & y < 8)
         {
@@ -417,7 +417,7 @@ public class Board:ICloneable
         }
         return false;
     }
-    public void PromoteMenu(int[] coords, char colour)
+    public void PromoteMenu(int[] coords, PieceColour colour)
     {
         StackPanel s = (StackPanel)promotePopup.Child;
         s.Children.Clear();
@@ -433,7 +433,7 @@ public class Board:ICloneable
         s.Children.Add(BuildButton(coords, "Bishop", colour));
         promotePopup.IsOpen = true;
     }
-    private Button BuildButton(int[] coords, string promotion, char colour)
+    private Button BuildButton(int[] coords, string promotion, PieceColour colour)
     {
         Button b = new Button
         {
@@ -443,7 +443,7 @@ public class Board:ICloneable
             Height = 50,
             Content = new Image
             {
-                Source = $"../Assets/Icons/{colour}_{promotion.ToLower()}.png"
+                Source = $"../Assets/Icons/{colour.ToString().ToLower()}_{promotion.ToLower()}.png"
 
             }
         };
@@ -453,7 +453,7 @@ public class Board:ICloneable
         };
         return b;
     }
-    private void OnClick(object sender, EventArgs e, int[] coords, string promotion, char colour)
+    private void OnClick(object sender, EventArgs e, int[] coords, string promotion, PieceColour colour)
     {
         Piece piece = promotion switch
         {

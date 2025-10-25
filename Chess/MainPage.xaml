@@ -7,16 +7,12 @@
     <Grid Name="BoardGrid" HorizontalAlignment="Center">
     </Grid>
     <Popup Name="GameOver" PlacementTarget="{Binding ElementName=BoardGrid}">
-      <StackPanel>
-        <Border Background="White" Padding="20" BorderThickness="10">
-          <StackPanel>
-            <TextBlock Foreground="Black" HorizontalAlignment="Center">
-              <Run Text="{Binding CurrentPlayer}"/>
-              <Run Text=" won"/>
-            </TextBlock>
-            <Button Name="PlayAgain" Content="Play again?" Foreground="Black" Background="Gray" HorizontalAlignment="Center"/>
-          </StackPanel>
-        </Border>
+      <StackPanel Background="Blue" Height="200" Width="300">
+        <TextBlock Foreground="Black" HorizontalAlignment="Center">
+          <Run Text="{Binding CurrentPlayer}"/>
+          <Run Text=" won"/>
+        </TextBlock>
+        <Button Name="PlayAgain" Content="Play again?" Foreground="Black" Background="Gray" HorizontalAlignment="Center"/>
       </StackPanel>
     </Popup>
     <Popup Name="Promote" PlacementTarget="{Binding ElementName=BoardGrid}">

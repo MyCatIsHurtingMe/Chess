@@ -1,11 +1,11 @@
 namespace Chess;
 
-public abstract class Piece(char col) : ICloneable
+public abstract class Piece(PieceColour col) : ICloneable
 {
     protected bool hasMoved = false;
     public bool HasMoved => hasMoved;
-    protected char colour = col;
-    public char Colour => colour;
+    protected PieceColour colour = col;
+    public PieceColour Colour => colour;
     public abstract bool IsValidMove(int[] curCoords, int[] moveCoords, Board board);
     public object Clone()
     {
