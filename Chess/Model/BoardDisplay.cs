@@ -1,10 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Chess;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.Media.Devices;
 
 public class BoardDisplay:INotifyPropertyChanged
 {
@@ -17,6 +14,7 @@ public class BoardDisplay:INotifyPropertyChanged
     Board temp;
     Popup gameOverPopup;
     Popup promotePopup;
+    [Bindable(true)]
     public PieceColour CurrentPlayer { get => currentPlayer; }
     public BoardDisplay(Grid g, Popup gameOver, Popup promote, Button b)
     {
@@ -51,7 +49,7 @@ public class BoardDisplay:INotifyPropertyChanged
                     Name = $"{c}{j + 1}",
                     Content = new Image
                     {
-                        Source = (piece == null) ? "" : $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                        Source = (piece == null) ? "" : $"Assets/Images/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
                     },
                     Width = 100,
                     Height = 100,
@@ -135,7 +133,7 @@ public class BoardDisplay:INotifyPropertyChanged
             {
                 Image image = new Image
                 {
-                    Source = $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                    Source = $"Assets/Images/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
                 };
                 gridIndex[coords[0], coords[1]].Content = image;
             }
@@ -147,7 +145,7 @@ public class BoardDisplay:INotifyPropertyChanged
         {
             for (int j = 0; j < 8; j++)
             {
-                gridIndex[i, j].IsEnabled = true;
+                gridIndex[i, j].Click += OnClick;
             }
         }
     }
@@ -157,7 +155,7 @@ public class BoardDisplay:INotifyPropertyChanged
         {
             for (int j = 0; j < 8; j++)
             {
-                gridIndex[i, j].IsEnabled = false;
+                gridIndex[i, j].Click -= OnClick;
             }
         }
     }
@@ -176,7 +174,7 @@ public class BoardDisplay:INotifyPropertyChanged
                 {
                     Image image = new Image
                     {
-                        Source = $"Assets/Icons/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                        Source = $"Assets/Images/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
                     };
                     gridIndex[i,j].Content = image;
                 }

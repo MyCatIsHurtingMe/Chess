@@ -419,14 +419,8 @@ public class Board:ICloneable
     }
     public void PromoteMenu(int[] coords, PieceColour colour)
     {
-        StackPanel s = (StackPanel)promotePopup.Child;
-        s.Children.Clear();
-        s.Children.Add(new TextBlock
-        {
-            Foreground = "Black",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            Text = "Choose Promotion:"
-        });
+        StackPanel foundation = (StackPanel)promotePopup.Child;
+        StackPanel s = (StackPanel)foundation.Children[1];
         s.Children.Add(BuildButton(coords, "Queen", colour));
         s.Children.Add(BuildButton(coords, "Rook", colour));
         s.Children.Add(BuildButton(coords, "Knight", colour));
@@ -437,16 +431,18 @@ public class Board:ICloneable
     {
         Button b = new Button
         {
-            Foreground = "Black",
-            Background = "Gray",
+            Background = "White",
+            BorderBrush= "White",
             Width = 50,
             Height = 50,
             Content = new Image
             {
-                Source = $"../Assets/Icons/{colour.ToString().ToLower()}_{promotion.ToLower()}.png"
+                Source = $"../Assets/Images/{colour.ToString().ToLower()}_{promotion.ToLower()}.png"
 
             }
         };
+        b.Background.Opacity = 0;
+        b.BorderBrush.Opacity = 0;
         b.Click += (sender, e) =>
         {
             OnClick(sender, e, coords, promotion, colour);

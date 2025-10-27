@@ -22,7 +22,8 @@
       "cwd": "${workspaceFolder}/Chess",
       // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
       "console": "internalConsole",
-      "stopAtEntry": false
+      "stopAtEntry": false,
+      "justMyCode": false
     },
     {
       // Use IntelliSense to find out which attributes exist for C# debugging

@@ -3,11 +3,22 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:Chess"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-  <StackPanel Name="Root" IsTabStop="True">
+  <Page.Resources>
+    <Style TargetType="Button">
+      <Setter Property="BorderBrush" Value="Black"/>
+      <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style x:Key="PopupStyle" TargetType="StackPanel">
+      <Setter Property="Background" Value="#5B5B5B"/>
+      <Setter Property="BorderBrush" Value="Black"/>
+      <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+  </Page.Resources>
+  <StackPanel Name="Root">
     <Grid Name="BoardGrid" HorizontalAlignment="Center">
     </Grid>
     <Popup Name="GameOver" PlacementTarget="{Binding ElementName=BoardGrid}">
-      <StackPanel Background="Blue" Height="200" Width="300">
+      <StackPanel Height="60" Width="120" Style="{StaticResource PopupStyle}">
         <TextBlock Foreground="Black" HorizontalAlignment="Center">
           <Run Text="{Binding CurrentPlayer}"/>
           <Run Text=" won"/>
@@ -16,7 +27,9 @@
       </StackPanel>
     </Popup>
     <Popup Name="Promote" PlacementTarget="{Binding ElementName=BoardGrid}">
-      <StackPanel Background="Blue" Height="200" Width="300">
+      <StackPanel Height="80" Width="220" Style="{StaticResource PopupStyle}">
+        <TextBlock Foreground="Black" HorizontalAlignment="Center" Text="Choose Promotion:"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
       </StackPanel>
     </Popup>
   </StackPanel>
