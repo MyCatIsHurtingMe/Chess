@@ -38,8 +38,17 @@ public class Board:ICloneable
         get => board[i[0], i[1]];
         set => board[i[0], i[1]] = value;
     }
+    public Pawn JustMovedTwo
+    {
+        get=>justMovedTwo; 
+        set
+        {
+            justMovedTwo = value;
+            wipeJustMovedPawn = false;
+        }
+    }
     public List<int[]> ButtonUpdates => buttonUpdates;
-    public Board(Popup p)
+    public Board(Popup p = null)
     {
         promotePopup = p;
         //initialising pieces
@@ -69,15 +78,6 @@ public class Board:ICloneable
         board[6, 7] = new Knight(PieceColour.Black);
         board[7, 7] = new Rook(PieceColour.Black);
     }
-    public Pawn JustMovedTwo
-    {
-        get=>justMovedTwo; 
-        set
-        {
-            justMovedTwo = value;
-            wipeJustMovedPawn = false;
-        }
-    }
     public void MoveSuccess()
     {
         currentMove++;
@@ -85,6 +85,8 @@ public class Board:ICloneable
         wipeJustMovedPawn = true;
         buttonUpdates.Clear();
     }
+    //Checks a line (diagonal or axial) for the closest piece (if any)
+    //Line checked is defined by i,j belonging to {-1, 0, 1} as the x and y directions of the line and coords, the location of the "starting" square
     public int[] CheckLine(int i, int j, int[] coords)
     {
         int x = coords[0] + i;
@@ -97,6 +99,7 @@ public class Board:ICloneable
         }
         return [];
     }
+    //checks whether the square at @Param coords is attacked by pieces of the opposite colour to @Param colour
     public bool IsAttacked(int[] coords, PieceColour colour)
     {
         Piece? piece;
@@ -174,6 +177,8 @@ public class Board:ICloneable
         }
         return false;
     }
+    //this function is nearly the same as IsAttacked, but returns the coordinates of every piece attacking the square instead of the boolean of 
+    // whether the square is attacked
     public List<int[]> AttackedBy(int[] coords, PieceColour colour)
     {
         List<int[]> attacks = new List<int[]>();
@@ -190,15 +195,15 @@ public class Board:ICloneable
                 {
                     //diagonal checks
                     attackCoords = CheckLine(i, j, coords);
-                    piece=(attackCoords.Length == 0)? null:board[attackCoords[0],attackCoords[1]];
-                    if (piece != null) if ((piece.Colour != colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen")))attacks.Add(attackCoords);
+                    piece = (attackCoords.Length == 0) ? null : board[attackCoords[0], attackCoords[1]];
+                    if (piece != null) if ((piece.Colour != colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen"))) attacks.Add(attackCoords);
                     //knight checks
                     x = coords[0] + i;
                     y = coords[1] + j;
                     if (x + i >= 0 & x + i < 8 & y >= 0 & y < 8)
                     {
                         piece = board[x + i, y];
-                        if (piece != null) if ((piece.GetType().Name == "Knight") & (piece.Colour != colour))attacks.Add([x + i, y]);
+                        if (piece != null) if ((piece.GetType().Name == "Knight") & (piece.Colour != colour)) attacks.Add([x + i, y]);
                     }
                     if (x >= 0 & x < 8 & y + j >= 0 & y + j < 8)
                     {
@@ -216,7 +221,7 @@ public class Board:ICloneable
                 {
                     //axis (non-diagonal line) checks
                     attackCoords = CheckLine(i, j, coords);
-                    piece=(attackCoords.Length == 0)? null:board[attackCoords[0],attackCoords[1]];
+                    piece = (attackCoords.Length == 0) ? null : board[attackCoords[0], attackCoords[1]];
                     if (piece != null) if ((piece.Colour != colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) attacks.Add(attackCoords);
                     //axis king checks
                     x = coords[0] + i;
@@ -224,7 +229,7 @@ public class Board:ICloneable
                     if ((x >= 0) & (x < 8) & (y >= 0) & (y < 8))
                     {
                         piece = board[x, y];
-                        if (piece != null) if ((piece.GetType().Name == "King") & (piece.Colour != colour)) attacks.Add([x,y]);
+                        if (piece != null) if ((piece.GetType().Name == "King") & (piece.Colour != colour)) attacks.Add([x, y]);
                     }
                 }
             }
@@ -237,16 +242,17 @@ public class Board:ICloneable
             if (coords[0] + 1 < 8)
             {
                 piece = board[coords[0] + 1, y];
-                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0]+1,y]);
+                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0] + 1, y]);
             }
             if (coords[0] - 1 >= 0)
             {
                 piece = board[coords[0] - 1, y];
-                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0]-1,y]);
+                if (piece != null) if ((piece.Colour != colour) & (piece.GetType().Name == "Pawn")) attacks.Add([coords[0] - 1, y]);
             }
         }
         return attacks;
     }
+    //Makes a deep copy of the Board object; used to check if the king is in check after a move before implementing the move
     public object Clone()
     {
         Piece[,] copy = new Piece[8, 8];
@@ -275,6 +281,7 @@ public class Board:ICloneable
             buttonUpdates = new List<int[]>()
         };
     }
+    //debug function
     public void PrintBoard(Piece[,] b)
     {
         for (int i = 0; i < 8; i++)
@@ -287,11 +294,13 @@ public class Board:ICloneable
             Console.WriteLine();
         }
     }
+    //
     public void UpdateSquare(int[] coords, Piece? piece)
     {
         this[coords] = piece;
         buttonUpdates.Add(coords);
     }
+    //checks if a player's move caused a checkmate
     public bool isCheckmate(int[] coords, PieceColour colour)
     {
         int x;
@@ -306,19 +315,15 @@ public class Board:ICloneable
                 if (x >= 0 & x < 8 & y >= 0 & y < 8) if (board[x, y]?.Colour != colour & !IsAttacked([x, y], colour)) return false;
             }
         }
-        Console.WriteLine(0);
-        //find all attackers for king square
         List<int[]> list = AttackedBy(coords, colour);
         PieceColour attackerColour = (colour == PieceColour.White) ? PieceColour.Black : PieceColour.White;
         if (list.Count == 0) return false;
         if (list.Count == 1)
         {
-            Console.WriteLine(1);
             int[] attackerCoords = list[0];
             (int xDiff, int yDiff) = (attackerCoords[0] - coords[0], attackerCoords[1] - coords[1]);
             if (Math.Abs(xDiff) <= 1 & Math.Abs(yDiff) <= 1)
             {
-                Console.WriteLine(2);
                 Piece defender;
                 list = AttackedBy(attackerCoords, attackerColour);
                 foreach (int[] defenderCoords in list)
@@ -329,7 +334,6 @@ public class Board:ICloneable
             }
             else
             {
-                Console.WriteLine(3);
                 if ((xDiff == 0) | (yDiff == 0) | Math.Abs(xDiff) == Math.Abs(yDiff))
                 {
                     int xSign = xDiff switch
@@ -355,9 +359,9 @@ public class Board:ICloneable
                 if (IsAttacked(attackerCoords, attackerColour)) return false;
             }
         }
-        Console.WriteLine(4);
         return true;
     }
+    //similar to the IsAttacked function but it checks if the square at @Param coords can be reached without an attack by any pieces of the colour @Param colour
     public bool IsReachable(int[] coords, PieceColour colour)
     {
         Piece? piece;
@@ -372,7 +376,8 @@ public class Board:ICloneable
                 {
                     //diagonal checks
                     pieceCoords = CheckLine(i, j, coords);
-                    if(pieceCoords.Length==2){
+                    if (pieceCoords.Length == 2)
+                    {
                         piece = board[pieceCoords[0], pieceCoords[1]];
                         if (piece != null) if ((piece.Colour == colour) & ((piece.GetType().Name == "Bishop") | (piece.GetType().Name == "Queen"))) return true;
                     }
@@ -394,7 +399,8 @@ public class Board:ICloneable
                 {
                     //axis (non-diagonal line) checks
                     pieceCoords = CheckLine(i, j, coords);
-                    if(pieceCoords.Length==2){
+                    if (pieceCoords.Length == 2)
+                    {
                         piece = board[pieceCoords[0], pieceCoords[1]];
                         if ((piece.Colour == colour) & ((piece.GetType().Name == "Rook") | (piece.GetType().Name == "Queen"))) return true;
                     }
@@ -417,6 +423,7 @@ public class Board:ICloneable
         }
         return false;
     }
+    //manipulates the promote popup. This is makeshift and should (probably) be implemented differently
     public void PromoteMenu(int[] coords, PieceColour colour)
     {
         StackPanel foundation = (StackPanel)promotePopup.Child;
@@ -427,12 +434,13 @@ public class Board:ICloneable
         s.Children.Add(BuildButton(coords, "Bishop", colour));
         promotePopup.IsOpen = true;
     }
+    //returns a Button object for the promote menu buttons
     private Button BuildButton(int[] coords, string promotion, PieceColour colour)
     {
         Button b = new Button
         {
             Background = "White",
-            BorderBrush= "White",
+            BorderBrush = "White",
             Width = 50,
             Height = 50,
             Content = new Image
@@ -445,11 +453,12 @@ public class Board:ICloneable
         b.BorderBrush.Opacity = 0;
         b.Click += (sender, e) =>
         {
-            OnClick(sender, e, coords, promotion, colour);
+            SelectPromotePiece(sender, e, coords, promotion, colour);
         };
         return b;
     }
-    private void OnClick(object sender, EventArgs e, int[] coords, string promotion, PieceColour colour)
+    //onclick to facilitate selection of which piece to promote
+    private void SelectPromotePiece(object sender, EventArgs e, int[] coords, string promotion, PieceColour colour)
     {
         Piece piece = promotion switch
         {

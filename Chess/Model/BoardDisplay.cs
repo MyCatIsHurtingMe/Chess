@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 public class BoardDisplay:INotifyPropertyChanged
 {
     Button[,] gridIndex = new Button[8, 8];
-    Board boardStructure;
+    Board board;
     Piece? selectedPiece = null;
     int[] selectedPieceCoords = new int[2];
     PieceColour currentPlayer = PieceColour.White;
@@ -14,11 +14,17 @@ public class BoardDisplay:INotifyPropertyChanged
     Board temp;
     Popup gameOverPopup;
     Popup promotePopup;
+     public event PropertyChangedEventHandler PropertyChanged;
     [Bindable(true)]
     public PieceColour CurrentPlayer { get => currentPlayer; }
+    // public Board Board {get => board; }
+    // public BoardDisplay()
+    // {
+    //     board = new();
+    // }
     public BoardDisplay(Grid g, Popup gameOver, Popup promote, Button b)
     {
-        boardStructure = new(promote);
+        board = new(promote);
         promotePopup = promote;
         b.Click += ResetGame;
         int width = 300;
@@ -43,7 +49,7 @@ public class BoardDisplay:INotifyPropertyChanged
             char c = (char)(i + 65);
             for (int j = 0; j < 8; j++)
             {
-                Piece piece = boardStructure[i, j];
+                Piece piece = board[i, j];
                 var button = new Button
                 {
                     Name = $"{c}{j + 1}",
@@ -69,17 +75,17 @@ public class BoardDisplay:INotifyPropertyChanged
         {
             if (selectedPiece == null)
             {
-                if (boardStructure[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour == currentPlayer)
+                if (board[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour == currentPlayer)
                 {
-                    selectedPiece = boardStructure[Grid.GetColumn(b), Grid.GetRow(b)];
+                    selectedPiece = board[Grid.GetColumn(b), Grid.GetRow(b)];
                     selectedPieceCoords = [Grid.GetColumn(b), Grid.GetRow(b)];
                 }
-                Console.WriteLine("piece colour: " + boardStructure[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour);
+                Console.WriteLine("piece colour: " + board[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour);
             }
             else
             {
                 int[] moveCoords = [Grid.GetColumn(b), Grid.GetRow(b)];
-                temp = (Board)boardStructure.Clone();
+                temp = (Board)board.Clone();
                 if (selectedPiece.IsValidMove(selectedPieceCoords, moveCoords, temp))
                 {
                     temp.UpdateSquare(moveCoords, selectedPiece);
@@ -88,7 +94,7 @@ public class BoardDisplay:INotifyPropertyChanged
                     {
                         return;
                     }
-                    boardStructure = temp;
+                    board = temp;
                     UpdateButtons();
                     if (promotePopup.IsOpen)
                     {
@@ -100,10 +106,10 @@ public class BoardDisplay:INotifyPropertyChanged
                         EnableButtons();
                         UpdateButtons();
                     }
-                    Console.WriteLine(boardStructure.JustMovedTwo);
+                    Console.WriteLine(board.JustMovedTwo);
                     currentPlayer = (currentPlayer == PieceColour.White) ? PieceColour.Black : PieceColour.White;
                     selectedPiece = null;
-                    boardStructure.MoveSuccess();
+                    board.MoveSuccess();
                 }
                 else
                 {
@@ -113,18 +119,20 @@ public class BoardDisplay:INotifyPropertyChanged
             }
         }
         Console.WriteLine("play colour: " + currentPlayer);
-        if(boardStructure.isCheckmate(boardStructure.GetKingCoords(currentPlayer), currentPlayer)){
+        if (board.isCheckmate(board.GetKingCoords(currentPlayer), currentPlayer))
+        {
             Console.WriteLine(currentPlayer + "checkmated");
             DisableButtons();
             gameOverPopup.IsOpen = true;
         }
     }
+    //updates the buttons in the ButtonUpdates list, then clears the list
     public void UpdateButtons()
     {
-        List<int[]> list = boardStructure.ButtonUpdates;
+        List<int[]> list = board.ButtonUpdates;
         foreach (int[] coords in list)
         {
-            Piece? piece = boardStructure[coords];
+            Piece? piece = board[coords];
             if (piece == null)
             {
                 gridIndex[coords[0], coords[1]].Content = null;
@@ -139,6 +147,7 @@ public class BoardDisplay:INotifyPropertyChanged
             }
         }
     }
+    //adds the onclick to all buttons
     public void EnableButtons()
     {
         for (int i = 0; i < 8; i++)
@@ -149,6 +158,7 @@ public class BoardDisplay:INotifyPropertyChanged
             }
         }
     }
+    //removes the onclick from all buttons
     public void DisableButtons()
     {
         for (int i = 0; i < 8; i++)
@@ -159,13 +169,14 @@ public class BoardDisplay:INotifyPropertyChanged
             }
         }
     }
+    //updates every button on the frontend board to match the backend
     public void ReloadButtons()
     {
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                Piece? piece = boardStructure[i,j];
+                Piece? piece = board[i,j];
                 if (piece == null)
                 {
                     gridIndex[i,j].Content = null;
@@ -181,16 +192,12 @@ public class BoardDisplay:INotifyPropertyChanged
             }
         }
     }
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    //resets the game board for a new game
     private void ResetGame(object sender, RoutedEventArgs e)
     {
         Console.WriteLine("Working");
         gameOverPopup.IsOpen = false;
-        boardStructure = new(promotePopup);
+        board = new(promotePopup);
         currentPlayer = PieceColour.White;
         moves = [];
         ReloadButtons();

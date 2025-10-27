@@ -1,6 +1,11 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+// using System.ComponentModel;
+// using Chess;
+// using CommunityToolkit.Mvvm.ComponentModel;
 
-public class ViewModel:ObservableObject
-{
-    
-}
+// public class ViewModel:ObservableObject
+// {
+//     BoardDisplay boardDisplay = new();
+//     Board board=BoardDisplay.Board;
+//     [Bindable(true)]
+//     PieceColour currentPlayer;
+// }

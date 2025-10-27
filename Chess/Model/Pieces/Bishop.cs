@@ -4,45 +4,28 @@ public class Bishop(PieceColour col) : Piece(col)
 {
     public override bool IsValidMove(int[] curCoords, int[] moveCoords, Board board)
     {
-        int xDiff = curCoords[0] - moveCoords[0];
-        int yDiff = curCoords[1] - moveCoords[1];
+        int xDiff = moveCoords[0] - curCoords[0];
+        int yDiff = moveCoords[1] - curCoords[1];
         if ((curCoords[0] == moveCoords[0]) | (Math.Abs(xDiff) != Math.Abs(yDiff))) return false;
+        int xSign = xDiff switch
+        {
+            < 0 => -1,
+            > 0 => 1
+        };
+        int ySign = yDiff switch
+        {
+            < 0 => -1,
+            > 0 => 1
+        };
+        int x = curCoords[0] + xSign;
+        int y = curCoords[1] + ySign;
+        while (x != moveCoords[0])
+        {
+            if (board[x, y] != null) return false;
+            x += xSign;
+            y += ySign;
+        }
         if (board[moveCoords[0], moveCoords[1]]?.Colour == colour) return false;
-        if (xDiff < 0)
-        {
-            if (yDiff < 0)
-            {
-                for (int i = 1; i < Math.Abs(xDiff); i++)
-                {
-                    if (board[curCoords[0] + i, curCoords[1] + i] != null) return false;
-                }
-            }
-            else
-            {
-                for (int i = 1; i < Math.Abs(xDiff); i++)
-                {
-                    if (board[curCoords[0] + i, curCoords[1] - i] != null) return false;
-                }
-            }
-        }
-        else
-        {
-            if (yDiff < 0)
-            {
-                for (int i = 1; i < Math.Abs(xDiff); i++)
-                {
-                    if (board[curCoords[0] - i, curCoords[1] + i] != null) return false;
-                }
-
-            }
-            else
-            {
-                for (int i = 1; i < Math.Abs(xDiff); i++)
-                {
-                    if (board[curCoords[0] - i, curCoords[1] - i] != null) return false;
-                }
-            }
-        }
         return true;
     }
 }
