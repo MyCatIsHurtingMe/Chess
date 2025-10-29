@@ -28,6 +28,7 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <PackageReference Include="Uno" />
     <PackageReference Include="Uno.Toolkit.WinUI" />
   </ItemGroup>
 

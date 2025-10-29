@@ -36,7 +36,7 @@ public class Pawn(PieceColour col) : Piece(col)
         int finalRank = (sign == 1) ? 7 : 0;
         if (valid)
         {
-            if (moveCoords[1] == finalRank) board.PromoteMenu(moveCoords, colour);
+            if (moveCoords[1] == finalRank) board.PromoteCoords=moveCoords;
             else hasMoved = true;
             return true;
         }

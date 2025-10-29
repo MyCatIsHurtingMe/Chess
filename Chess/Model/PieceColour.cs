@@ -1,8 +1,7 @@
-namespace Chess
+namespace Chess;
+
+public enum PieceColour
 {
-    public enum PieceColour
-    {
-        White=1,
-        Black=-1
-    }
+    White=1,
+    Black=-1
 }

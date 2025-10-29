@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Chess;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -9,19 +8,14 @@ public class BoardDisplay:INotifyPropertyChanged
     Board board;
     Piece? selectedPiece = null;
     int[] selectedPieceCoords = new int[2];
+    [Bindable(true)]
     PieceColour currentPlayer = PieceColour.White;
+    public PieceColour CurrentPlayer { get => currentPlayer; }
     List<Board> moves = [];
     Board temp;
     Popup gameOverPopup;
     Popup promotePopup;
      public event PropertyChangedEventHandler PropertyChanged;
-    [Bindable(true)]
-    public PieceColour CurrentPlayer { get => currentPlayer; }
-    // public Board Board {get => board; }
-    // public BoardDisplay()
-    // {
-    //     board = new();
-    // }
     public BoardDisplay(Grid g, Popup gameOver, Popup promote, Button b)
     {
         board = new(promote);
@@ -50,21 +44,22 @@ public class BoardDisplay:INotifyPropertyChanged
             for (int j = 0; j < 8; j++)
             {
                 Piece piece = board[i, j];
-                var button = new Button
+                Button button = new Button
                 {
-                    Name = $"{c}{j + 1}",
-                    Content = new Image
-                    {
-                        Source = (piece == null) ? "" : $"Assets/Images/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
-                    },
+                    Background = ((i + j) % 2 == 0) ? "Green" : "DarkGreen",
                     Width = 100,
                     Height = 100,
-                    Background = ((i + j) % 2 == 0) ? "Green" : "DarkGreen"
+                    Content = new Image
+                    {
+                        Source = (piece == null) ? "" : $"ms-appx:///Assets/Images/{piece.Colour.ToString().ToLower()}_{piece.GetType().Name.ToLower()}.png"
+                    }
                 };
+                Console.WriteLine(1);
                 button.Click += OnClick;
                 Grid.SetColumn(button, i);
                 Grid.SetRow(button, j);
                 g.Children.Add(button);
+                Console.WriteLine(g.Children.Count);
                 gridIndex[i, j] = button;
             }
         }
@@ -80,7 +75,6 @@ public class BoardDisplay:INotifyPropertyChanged
                     selectedPiece = board[Grid.GetColumn(b), Grid.GetRow(b)];
                     selectedPieceCoords = [Grid.GetColumn(b), Grid.GetRow(b)];
                 }
-                Console.WriteLine("piece colour: " + board[Grid.GetColumn(b), Grid.GetRow(b)]?.Colour);
             }
             else
             {
@@ -96,17 +90,17 @@ public class BoardDisplay:INotifyPropertyChanged
                     }
                     board = temp;
                     UpdateButtons();
-                    if (promotePopup.IsOpen)
+                    if (board.PromoteCoords!=null)
                     {
+                        board.PromoteMenu(currentPlayer);
                         DisableButtons();
-                        while (promotePopup.IsOpen)
+                        while (board.PromoteCoords!=null)
                         {
                             await Task.Delay(100);
                         }
                         EnableButtons();
                         UpdateButtons();
                     }
-                    Console.WriteLine(board.JustMovedTwo);
                     currentPlayer = (currentPlayer == PieceColour.White) ? PieceColour.Black : PieceColour.White;
                     selectedPiece = null;
                     board.MoveSuccess();
@@ -118,10 +112,8 @@ public class BoardDisplay:INotifyPropertyChanged
                 }
             }
         }
-        Console.WriteLine("play colour: " + currentPlayer);
-        if (board.isCheckmate(board.GetKingCoords(currentPlayer), currentPlayer))
+        if (board.IsCheckmate(board.GetKingCoords(currentPlayer), currentPlayer))
         {
-            Console.WriteLine(currentPlayer + "checkmated");
             DisableButtons();
             gameOverPopup.IsOpen = true;
         }
@@ -141,7 +133,7 @@ public class BoardDisplay:INotifyPropertyChanged
             {
                 Image image = new Image
                 {
-                    Source = $"Assets/Images/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                    Source = $"ms-appx:///Assets/Images/{piece.Colour.ToString().ToLower()}_{piece.GetType().Name.ToLower()}.png"
                 };
                 gridIndex[coords[0], coords[1]].Content = image;
             }
@@ -185,7 +177,7 @@ public class BoardDisplay:INotifyPropertyChanged
                 {
                     Image image = new Image
                     {
-                        Source = $"Assets/Images/{piece.Colour}_{piece.GetType().Name.ToLower()}.png"
+                        Source = $"ms-appx:///Assets/Images/{piece.Colour.ToString().ToLower()}_{piece.GetType().Name.ToLower()}.png"
                     };
                     gridIndex[i,j].Content = image;
                 }
@@ -195,7 +187,6 @@ public class BoardDisplay:INotifyPropertyChanged
     //resets the game board for a new game
     private void ResetGame(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine("Working");
         gameOverPopup.IsOpen = false;
         board = new(promotePopup);
         currentPlayer = PieceColour.White;
