@@ -6,7 +6,7 @@ Clone this repository to a location of your choice with git clone https://github
 
 Set your current directory to the created folder Chess with cd Chess
 
-Build a single-file executable with dotnet publish -f net9.0-desktop -o Build -r {TARGET} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true, with {TARGET} replaced with your OS+Architecture combination. This will be win-x64 for modern windows operating systems and linux-x64 for most linux operating systems; see the dotnet RID page if these don't work for you here: https://learn.microsoft.com/en-us/dotnet/core/rid-catalog#known-rids
+Build a single-file executable with dotnet publish -f net9.0-desktop -o Build -r {TARGET} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true, with {TARGET} replaced with your OS+Architecture combination. This will be win-x64 for most windows architectures, linux-x64 for most linux architectures and osx-x64 for most mac architectures; see the dotnet RID page if these don't work for you here: https://learn.microsoft.com/en-us/dotnet/core/rid-catalog#known-rids
 
 Navigate into the build directory with cd Build
 
