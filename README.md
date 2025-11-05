@@ -2,12 +2,25 @@ Chess app built using C# and XAML with the .NET and UNO Platform frameworks.
 
 If you want to run this, follow these instructions (These depend on the git and dotnet cli tools):
 
-Clone this repository to a location of your choice with git clone https://github.com/MyCatIsHurtingMe/Chess.git
+Clone this repository to a location of your choice with 
+...
+git clone https://github.com/MyCatIsHurtingMe/Chess.git
+...
 
-Set your current directory to the created folder Chess with cd Chess
+Set your current directory to the created folder Chess with 
+...
+cd Chess
+...
 
-Build a single-file executable with dotnet publish -f net9.0-desktop -o Build -r {TARGET} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true, with {TARGET} replaced with your OS+Architecture combination. This will be win-x64 for most windows architectures, linux-x64 for most linux architectures and osx-x64 for most mac architectures; see the dotnet RID page if these don't work for you here: https://learn.microsoft.com/en-us/dotnet/core/rid-catalog#known-rids
+Build a single-file executable with 
+...
+dotnet publish -f net9.0-desktop -o Build -r {TARGET} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
+...
+with {TARGET} replaced with your OS+Architecture combination. This will be win-x64 for most windows architectures, linux-x64 for most linux architectures and osx-x64 for most mac architectures; see the dotnet RID page if these don't work for you here: https://learn.microsoft.com/en-us/dotnet/core/rid-catalog#known-rids
 
-Navigate into the build directory with cd Build
+Navigate into the build directory with 
+...
+cd Build
+...
 
 Run the program with ./Chess on linux shells, .\Chess.exe in PowerShell or Chess.exe in Windows Command Prompt
